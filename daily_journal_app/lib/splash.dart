@@ -9,51 +9,50 @@ class Splash extends StatefulWidget {
   State<Splash> createState() => _SplashState();
 }
 
-
-class _SplashState extends State<Splash> with SingleTickerProviderStateMixin{
+class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-    Future.delayed(Duration(seconds: 2), (){
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const HomeScreen()));
+    Future.delayed(Duration(seconds: 2), () {
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const HomeScreen()));
     });
   }
+
   @override
   void dispose() {
     // TODO: implement dispose
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,overlays: SystemUiOverlay.values);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: SystemUiOverlay.values);
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         width: double.infinity,
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-              colors: [Colors.white, Colors.white],
+            gradient: LinearGradient(
+          colors: [Colors.white, Colors.white],
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
-          )
-        ),
+        )),
         child: const Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(height: 20),
-            Text(
-              'Dayz',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontStyle: FontStyle.normal,
-                color: Colors.black,
-                fontSize: 54,
-              )
-            )
+            Text('Dayz',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.normal,
+                  color: Colors.black,
+                  fontSize: 54,
+                ))
           ],
         ),
-
       ),
     );
   }
