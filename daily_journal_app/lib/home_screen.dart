@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'EntryData.dart';
+import 'entry_data.dart';
 import 'write_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,6 +14,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+  }
+
+  void deleteNote(int index) {
+    setState(() {
+      Entry note = sampleEntry[index];
+      sampleEntry.remove(note);
+    });
   }
 
   @override
@@ -72,63 +79,73 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
+            const SizedBox(
+              height: 20,
+            ),
             Expanded(
                 child: ListView.builder(
               itemCount: sampleEntry.length,
               padding: const EdgeInsets.only(top: 30),
               itemBuilder: (context, index) {
                 return Card(
-                  margin: const EdgeInsets.only(bottom: 20),
-                  color: Colors.white70,
-                  elevation: 3,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: ListTile(
-                      onTap: () async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                wScreen(entry: sampleEntry[index]),
+                    margin: const EdgeInsets.only(bottom: 20),
+                    color: Colors.white70,
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: ListTile(
+                        onTap: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  WriteScreen(entry: sampleEntry[index]),
+                            ),
+                          );
+                        },
+                        title: RichText(
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          text: TextSpan(
+                              text: '${sampleEntry[index].title} \n',
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  height: 1.5),
+                              children: [
+                                TextSpan(
+                                  text: sampleEntry[index].content,
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 14,
+                                      height: 1.5),
+                                )
+                              ]),
+                        ),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            '${DateFormat('EEE MMM d, yyyy h:mm a').format(sampleEntry[index].modifiedTime)}',
+                            style: TextStyle(
+                                fontSize: 10,
+                                fontStyle: FontStyle.italic,
+                                color: Colors.black),
                           ),
-                        );
-                      },
-                      title: RichText(
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        text: TextSpan(
-                            text: '${sampleEntry[index].title} \n',
-                            style: const TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                height: 1.5),
-                            children: [
-                              TextSpan(
-                                text: sampleEntry[index].content,
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 14,
-                                    height: 1.5),
-                              )
-                            ]),
-                      ),
-                      subtitle: Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                          '${DateFormat('EEE MMM d, yyyy h:mm a').format(sampleEntry[index].modifiedTime)}',
-                          style: TextStyle(
-                              fontSize: 10,
-                              fontStyle: FontStyle.italic,
-                              color: Colors.black),
+                        ),
+                        trailing: IconButton(
+                          onPressed: () async {
+                            deleteNote(index);
+                          },
+                          icon: const Icon(
+                            Icons.delete,
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                );
+                    ));
               },
             ))
           ],
@@ -136,4 +153,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  confirmDialog(BuildContext context) {}
 }

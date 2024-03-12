@@ -42,5 +42,17 @@ List<Entry> sampleEntry = [
     title: 'Num 5',
     content: '101010 0101010 0010001010100101',
     modifiedTime: DateTime.now(),
-  )
+  ),
+  Entry(
+    id: 5,
+    title: 'Num 6',
+    content: '101010 0101010 0010001010100101',
+    modifiedTime: DateTime.now(),
+  ),
+  Entry(
+    id: 6,
+    title: 'Num 7',
+    content: '101010 0101010 0010001010100101',
+    modifiedTime: DateTime.now(),
+  ),
 ];

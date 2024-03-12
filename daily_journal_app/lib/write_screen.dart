@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
-import 'EntryData.dart';
+import 'entry_data.dart';
 
-class wScreen extends StatefulWidget {
+class WriteScreen extends StatefulWidget {
   final Entry? entry;
-  const wScreen({super.key, this.entry});
+  const WriteScreen({super.key, this.entry});
 
   @override
-  State<wScreen> createState() => _wScreenState();
+  State<WriteScreen> createState() => _WriteScreenState();
 }
 
-class _wScreenState extends State<wScreen> {
+class _WriteScreenState extends State<WriteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
