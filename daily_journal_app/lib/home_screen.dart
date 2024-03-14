@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'entry_data.dart';
 import 'write_screen.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,44 +17,14 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-  void deleteNote(int index) {
-    setState(() {
-      Entry note = sampleEntry[index];
-      sampleEntry.remove(note);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade900,
+      backgroundColor: Color.fromARGB(143, 224, 222, 222),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 40, 16, 0),
+        padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Dayz',
-                  style: TextStyle(fontSize: 30, color: Colors.white),
-                ),
-                IconButton(
-                    onPressed: () {},
-                    padding: const EdgeInsets.all(0),
-                    icon: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                          color: Colors.grey.shade800.withOpacity(.8),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: const Icon(
-                        Icons.sort,
-                        color: Colors.white,
-                      ),
-                    ))
-              ],
-            ),
             const SizedBox(
               height: 20,
             ),
@@ -79,8 +50,24 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            const SizedBox(
-              height: 20,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                    onPressed: () {},
+                    padding: const EdgeInsets.all(0),
+                    icon: Container(
+                      width: 35,
+                      height: 30,
+                      decoration: BoxDecoration(
+                          color: Colors.grey.shade800.withOpacity(.8),
+                          borderRadius: BorderRadius.circular(10)),
+                      child: const Icon(
+                        Icons.sort,
+                        color: Colors.grey,
+                      ),
+                    ))
+              ],
             ),
             Expanded(
                 child: ListView.builder(
@@ -129,8 +116,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         subtitle: Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Text(
-                            '${DateFormat('EEE MMM d, yyyy h:mm a').format(sampleEntry[index].modifiedTime)}',
-                            style: TextStyle(
+                            DateFormat('EEE MMM d, yyyy h:mm a')
+                                .format(sampleEntry[index].modifiedTime),
+                            style: const TextStyle(
                                 fontSize: 10,
                                 fontStyle: FontStyle.italic,
                                 color: Colors.black),
@@ -142,17 +130,50 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                           icon: const Icon(
                             Icons.delete,
+                            color: Colors.redAccent,
                           ),
                         ),
                       ),
                     ));
               },
-            ))
+            )),
+            const SizedBox(
+              height: 10,
+            ),
           ],
         ),
       ),
+      bottomNavigationBar: const GNav(
+          backgroundColor: Colors.black,
+          gap: 8,
+          color: Colors.white,
+          activeColor: Colors.white,
+          padding: EdgeInsets.all(16),
+          tabs: [
+            GButton(
+              icon: Icons.add_chart,
+              text: 'Dayz Data',
+            ),
+            GButton(
+              icon: Icons.home,
+              text: 'Home',
+            ),
+            GButton(
+              icon: Icons.search,
+              text: 'Search',
+            ),
+            GButton(
+              icon: Icons.add_box_outlined,
+              text: 'Add',
+            )
+          ]),
     );
   }
 
-  confirmDialog(BuildContext context) {}
+  void deleteNote(int index) {
+    setState(() {
+      Entry entry = sampleEntry[index];
+      sampleEntry.remove(entry);
+    });
+  }
 }
