@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
+
 
 import 'entry_data.dart';
+import 'main.dart';
 
 class WriteScreen extends StatefulWidget {
   final Entry? entry;
@@ -28,8 +29,8 @@ class _WriteScreenState extends State<WriteScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white70,
+    return CustomScaffold(
+      selectedIndex: 3,
       body: Padding(
         padding: const EdgeInsets.fromLTRB(16, 40, 16, 0),
         child: Column(children: [
@@ -82,39 +83,16 @@ class _WriteScreenState extends State<WriteScreen> {
           ))
         ]),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pop(
-              context, [_titleController.text, _contentController.text]);
-        },
-        elevation: 10,
-        backgroundColor: Colors.grey.shade800,
-        child: const Icon(Icons.save),
-      ),
-      bottomNavigationBar: const GNav(
-          backgroundColor: Colors.black,
-          gap: 8,
-          color: Colors.white,
-          activeColor: Colors.white,
-          padding: EdgeInsets.all(16),
-          tabs: [
-            GButton(
-              icon: Icons.add_chart,
-              text: 'Dayz Data',
-            ),
-            GButton(
-              icon: Icons.home,
-              text: 'Home',
-            ),
-            GButton(
-              icon: Icons.search,
-              text: 'Search',
-            ),
-            GButton(
-              icon: Icons.add_box_outlined,
-              text: 'Add',
-            )
-          ]),
+      //TODO: implement/add floatingActionButton in CustomScaffold class
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Navigator.pop(
+      //         context, [_titleController.text, _contentController.text]);
+      //   },
+      //   elevation: 10,
+      //   backgroundColor: Colors.grey.shade800,
+      //   child: const Icon(Icons.save),
+      // ),
     );
   }
 }

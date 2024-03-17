@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'entry_data.dart';
+import 'main.dart';
 import 'write_screen.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,8 +19,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color.fromARGB(143, 224, 222, 222),
+    return CustomScaffold(
+      selectedIndex: 1,
       body: Padding(
         padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
         child: Column(
@@ -143,30 +143,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: const GNav(
-          backgroundColor: Colors.black,
-          gap: 8,
-          color: Colors.white,
-          activeColor: Colors.white,
-          padding: EdgeInsets.all(16),
-          tabs: [
-            GButton(
-              icon: Icons.add_chart,
-              text: 'Dayz Data',
-            ),
-            GButton(
-              icon: Icons.home,
-              text: 'Home',
-            ),
-            GButton(
-              icon: Icons.search,
-              text: 'Search',
-            ),
-            GButton(
-              icon: Icons.add_box_outlined,
-              text: 'Add',
-            )
-          ]),
     );
   }
 
