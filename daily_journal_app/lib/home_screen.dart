@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -15,6 +17,17 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late Database _database;
   List<Map<String, dynamic>> _entrys = [];
+
+  // List of inspirational quotes
+  final List<String> quotes = [
+    "The only way to do great work is to love what you do.",
+    "Believe you can and you're halfway there.",
+    "Don't watch the clock; do what it does. Keep going.",
+    "The future belongs to those who believe in the beauty of their dreams.",
+  ];
+
+  final Random random = Random();
+
   @override
   void initState() {
     super.initState();
@@ -97,54 +110,56 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    int quoteIndex = random.nextInt(quotes.length);
     return CustomScaffold(
-      selectedIndex: 1,
+      //selectedIndex: 1,
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
+        padding: const EdgeInsets.fromLTRB(16, 48, 16, 24),
         child: Column(
           children: [
+
             const SizedBox(
               height: 20,
             ),
-            TextField(
-              style: const TextStyle(fontSize: 16, color: Colors.white),
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                hintText: "Search",
-                hintStyle: const TextStyle(color: Colors.grey),
-                prefixIcon: const Icon(
-                  Icons.search,
-                  color: Colors.grey,
-                ),
-                fillColor: Colors.grey.shade800,
-                filled: true,
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: const BorderSide(color: Colors.transparent),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: const BorderSide(color: Colors.transparent),
-                ),
-              ),
-            ),
+            // TextField(
+            //   style: const TextStyle(fontSize: 16, color: Colors.white),
+            //   decoration: InputDecoration(
+            //     contentPadding: const EdgeInsets.symmetric(vertical: 12),
+            //     hintText: "Search",
+            //     hintStyle: const TextStyle(color: Colors.grey),
+            //     prefixIcon: const Icon(
+            //       Icons.search,
+            //       color: Colors.grey,
+            //     ),
+            //     fillColor: Colors.grey.shade800,
+            //     filled: true,
+            //     focusedBorder: OutlineInputBorder(
+            //       borderRadius: BorderRadius.circular(30),
+            //       borderSide: const BorderSide(color: Colors.transparent),
+            //     ),
+            //     enabledBorder: OutlineInputBorder(
+            //       borderRadius: BorderRadius.circular(30),
+            //       borderSide: const BorderSide(color: Colors.transparent),
+            //     ),
+            //   ),
+            // ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                IconButton(
-                    onPressed: () {},
-                    padding: const EdgeInsets.all(0),
-                    icon: Container(
-                      width: 35,
-                      height: 30,
-                      decoration: BoxDecoration(
-                          color: Colors.grey.shade800.withOpacity(.8),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: const Icon(
-                        Icons.sort,
-                        color: Colors.grey,
-                      ),
-                    ))
+                // IconButton(
+                //     onPressed: () {},
+                //     padding: const EdgeInsets.all(0),
+                //     icon: Container(
+                //       width: 35,
+                //       height: 30,
+                //       decoration: BoxDecoration(
+                //           color: Colors.grey.shade800.withOpacity(.8),
+                //           borderRadius: BorderRadius.circular(10)),
+                //       child: const Icon(
+                //         Icons.sort,
+                //         color: Colors.grey,
+                //       ),
+                //     ))
               ],
             ),
             Expanded(
@@ -221,6 +236,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ));
               },
             )),
+            Text(
+              quotes[quoteIndex],
+              style: TextStyle(fontSize: 12, color: Colors.blueGrey, fontStyle: FontStyle.italic),
+            ),
             const SizedBox(
               height: 10,
             ),
