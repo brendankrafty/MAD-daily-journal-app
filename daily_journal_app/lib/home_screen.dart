@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:daily_journal_app/update_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'entry_data.dart';
@@ -36,6 +38,8 @@ class _HomeScreenState extends State<HomeScreen> {
     //_refreshNotes();
   }
 
+  String formattedDate =
+      DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.now());
   Future<void> _initializeDatabase() async {
     _database = await openDatabase(
       join(await getDatabasesPath(), 'entry_database.db'),
@@ -46,30 +50,30 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       version: 1,
     );
-    _refreshNotes();
+    _refreshEntry();
   }
 
-  Future<void> _insertNote(Entry? note) async {
+  Future<void> _insertEntry(Entry? entry) async {
     await _database.insert(
-      'notes',
-      note!.toMap(),
+      'entry',
+      entry!.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    _refreshNotes();
+    _refreshEntry();
   }
 
-  Future<void> _updateNote(Entry? note) async {
+  Future<void> _updateEntry(Entry? entry) async {
     await _database.update(
-      'notes',
-      note!.toMap(),
+      'entry',
+      entry!.toMap(),
       where: 'id = ?',
-      whereArgs: [note.id],
+      whereArgs: [entry.id],
     );
-    _refreshNotes();
+    _refreshEntry();
   }
 
-  Future<void> _refreshNotes() async {
-    final List<Map<String, dynamic>> notes = await _database.query('notes');
+  Future<void> _refreshEntry() async {
+    final List<Map<String, dynamic>> notes = await _database.query('entry');
     setState(() {
       _entrys = notes;
     });
@@ -77,11 +81,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _deleteNote(int? id) async {
     await _database.delete(
-      'notes',
+      'entry',
       where: 'id = ?',
       whereArgs: [id],
     );
-    _refreshNotes();
+    _refreshEntry();
   }
 
   // DBHelper dbhelp = DBHelper();
@@ -117,7 +121,6 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.fromLTRB(16, 48, 16, 24),
         child: Column(
           children: [
-
             const SizedBox(
               height: 20,
             ),
@@ -143,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
             //     ),
             //   ),
             // ),
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 // IconButton(
@@ -180,14 +183,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           await Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (BuildContext context) => WriteScreen(
+                              builder: (BuildContext context) => UpdateScreen(
                                 entry: Entry(
                                     id: _entrys[index]['id'],
                                     etitle: _entrys[index]['title'],
                                     econtent: _entrys[index]['content'],
                                     emoodRating: _entrys[index]['mood']),
-                                saveEntry: _insertNote,
-                                updateEntry: _updateNote,
+                                updateEntry: _updateEntry,
                               ),
                             ),
                           );
@@ -196,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                           text: TextSpan(
-                              text: _entrys[index]['title'],
+                              text: _entrys[index]['title'] + '\n',
                               style: const TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
@@ -216,7 +218,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         subtitle: Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Text(
-                            DateTime.now() as String,
+                            formattedDate,
                             style: const TextStyle(
                                 fontSize: 10,
                                 fontStyle: FontStyle.italic,
@@ -225,7 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         trailing: IconButton(
                           onPressed: () async {
-                            _deleteNote(index);
+                            _deleteNote(_entrys[index]['id']);
                           },
                           icon: const Icon(
                             Icons.delete,
@@ -238,10 +240,34 @@ class _HomeScreenState extends State<HomeScreen> {
             )),
             Text(
               quotes[quoteIndex],
-              style: TextStyle(fontSize: 12, color: Colors.blueGrey, fontStyle: FontStyle.italic),
+              style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.blueGrey,
+                  fontStyle: FontStyle.italic),
             ),
             const SizedBox(
               height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FloatingActionButton.small(
+                  onPressed: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => WriteScreen(
+                            entry:
+                                Entry(econtent: "", emoodRating: 1, etitle: ""),
+                            saveEntry: (entry) async {
+                              await _insertEntry(entry);
+                            }),
+                      ),
+                    );
+                  },
+                  child: const Icon(Icons.add),
+                ),
+              ],
             ),
           ],
         ),

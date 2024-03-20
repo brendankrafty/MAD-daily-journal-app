@@ -6,12 +6,11 @@ import 'main.dart';
 class WriteScreen extends StatefulWidget {
   final Entry? entry;
   final Function(Entry?) saveEntry;
-  final Function(Entry?) updateEntry;
-  const WriteScreen(
-      {super.key,
-      this.entry,
-      required this.saveEntry,
-      required this.updateEntry});
+  const WriteScreen({
+    super.key,
+    this.entry,
+    required this.saveEntry,
+  });
   @override
   State<WriteScreen> createState() => _WriteScreenState();
 }
@@ -96,13 +95,10 @@ class _WriteScreenState extends State<WriteScreen> {
               final content = _contentController.text;
               const mood = 10;
               final id = widget.entry?.id;
-              if (title.isNotEmpty && content.isNotEmpty) {
-                widget.saveEntry(Entry(
-                    id: id,
-                    etitle: title,
-                    econtent: content,
-                    emoodRating: mood));
-              }
+
+              widget.saveEntry(Entry(
+                  id: id, etitle: title, econtent: content, emoodRating: mood));
+              Navigator.of(context).pop();
             },
             elevation: 10,
             backgroundColor: Colors.grey.shade800,

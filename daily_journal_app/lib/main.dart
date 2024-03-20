@@ -20,19 +20,15 @@ class MyApp extends StatelessWidget {
       routes: {
         '/home': (context) => const HomeScreen(),
         '/mood': (context) => MoodScreen(),
-        '/write': (context) =>
-            WriteScreen(
+        '/write': (context) => WriteScreen(
               saveEntry: (entry) {
                 // Provide saveEntry function here
               },
-              updateEntry: (entry) {
-                // Provide updateEntry function here
-              },
             ),
       },
-    theme: ThemeData(
-    scaffoldBackgroundColor: Colors.grey[200],
-    ),
+      theme: ThemeData(
+        scaffoldBackgroundColor: Colors.grey[200],
+      ),
     );
   }
 }
