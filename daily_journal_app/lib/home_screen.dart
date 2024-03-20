@@ -1,3 +1,4 @@
+import 'package:daily_journal_app/update_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
@@ -17,6 +18,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late Database _database;
   List<Map<String, dynamic>> _entrys = [];
+
   @override
   void initState() {
     super.initState();
@@ -25,6 +27,8 @@ class _HomeScreenState extends State<HomeScreen> {
     //_refreshNotes();
   }
 
+  String formattedDate =
+      DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.now());
   Future<void> _initializeDatabase() async {
     _database = await openDatabase(
       join(await getDatabasesPath(), 'entry_database.db'),
@@ -40,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _insertNote(Entry? note) async {
     await _database.insert(
-      'notes',
+      'entry',
       note!.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -49,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _updateNote(Entry? note) async {
     await _database.update(
-      'notes',
+      'entry',
       note!.toMap(),
       where: 'id = ?',
       whereArgs: [note.id],
@@ -58,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _refreshNotes() async {
-    final List<Map<String, dynamic>> notes = await _database.query('notes');
+    final List<Map<String, dynamic>> notes = await _database.query('entry');
     setState(() {
       _entrys = notes;
     });
@@ -66,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _deleteNote(int? id) async {
     await _database.delete(
-      'notes',
+      'entry',
       where: 'id = ?',
       whereArgs: [id],
     );
@@ -167,13 +171,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           await Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (BuildContext context) => WriteScreen(
+                              builder: (BuildContext context) => UpdateScreen(
                                 entry: Entry(
                                     id: _entrys[index]['id'],
                                     etitle: _entrys[index]['title'],
                                     econtent: _entrys[index]['content'],
                                     emoodRating: _entrys[index]['mood']),
-                                saveEntry: _insertNote,
                                 updateEntry: _updateNote,
                               ),
                             ),
@@ -183,7 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                           text: TextSpan(
-                              text: _entrys[index]['title'],
+                              text: _entrys[index]['title'] + '\n',
                               style: const TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
@@ -203,7 +206,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         subtitle: Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Text(
-                            DateTime.now() as String,
+                            formattedDate,
                             style: const TextStyle(
                                 fontSize: 10,
                                 fontStyle: FontStyle.italic,
@@ -212,7 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         trailing: IconButton(
                           onPressed: () async {
-                            _deleteNote(index);
+                            _deleteNote(_entrys[index]['id']);
                           },
                           icon: const Icon(
                             Icons.delete,
@@ -223,8 +226,26 @@ class _HomeScreenState extends State<HomeScreen> {
                     ));
               },
             )),
-            const SizedBox(
-              height: 10,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FloatingActionButton.small(
+                  onPressed: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => WriteScreen(
+                            entry:
+                                Entry(econtent: "", emoodRating: 1, etitle: ""),
+                            saveEntry: (entry) async {
+                              await _insertNote(entry);
+                            }),
+                      ),
+                    );
+                  },
+                  child: const Icon(Icons.add),
+                ),
+              ],
             ),
           ],
         ),

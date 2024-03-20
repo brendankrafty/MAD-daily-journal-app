@@ -10,7 +10,7 @@ class Entry {
     emoodRating = moodRating;
   }
   Entry({
-    required this.id,
+    this.id,
     required this.etitle,
     required this.econtent,
     required this.emoodRating,

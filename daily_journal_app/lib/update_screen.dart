@@ -5,19 +5,15 @@ import 'package:flutter/material.dart';
 import 'entry_data.dart';
 import 'main.dart';
 
-class WriteScreen extends StatefulWidget {
+class UpdateScreen extends StatefulWidget {
   final Entry? entry;
-  final Function(Entry?) saveEntry;
-  const WriteScreen({
-    super.key,
-    this.entry,
-    required this.saveEntry,
-  });
+  final Function(Entry?) updateEntry;
+  const UpdateScreen({super.key, this.entry, required this.updateEntry});
   @override
-  State<WriteScreen> createState() => _WriteScreenState();
+  State<UpdateScreen> createState() => _UpdateScreenState();
 }
 
-class _WriteScreenState extends State<WriteScreen> {
+class _UpdateScreenState extends State<UpdateScreen> {
   TextEditingController _titleController = TextEditingController();
   TextEditingController _contentController = TextEditingController();
 
@@ -30,11 +26,6 @@ class _WriteScreenState extends State<WriteScreen> {
     }
 
     super.initState();
-  }
-
-  Future<void> _insertNote(Entry? entry) async {
-    DBHelper entryDB = DBHelper();
-    await entryDB.save(entry!);
   }
 
   @override
@@ -91,27 +82,22 @@ class _WriteScreenState extends State<WriteScreen> {
               ),
             ],
           )),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  final title = _titleController.text;
-                  final content = _contentController.text;
-                  const mood = 10;
-                  final id = widget.entry?.id;
-
-                  widget.saveEntry(Entry(
-                      id: id,
-                      etitle: title,
-                      econtent: content,
-                      emoodRating: mood));
-
-                  Navigator.of(context).pop();
-                },
-                child: const Icon(Icons.save),
-              ),
-            ],
+          ElevatedButton(
+            onPressed: () {
+              final title = _titleController.text;
+              final content = _contentController.text;
+              const mood = 10;
+              final id = widget.entry?.id;
+              if (title.isNotEmpty && content.isNotEmpty) {
+                widget.updateEntry(Entry(
+                    id: id,
+                    etitle: title,
+                    econtent: content,
+                    emoodRating: mood));
+              }
+              Navigator.of(context).pop();
+            },
+            child: const Icon(Icons.save),
           ),
         ]),
       ),
