@@ -1,7 +1,5 @@
 import 'package:daily_journal_app/database_helper.dart';
-import 'package:daily_journal_app/home_screen.dart';
 import 'package:flutter/material.dart';
-
 import 'entry_data.dart';
 import 'main.dart';
 

@@ -2,7 +2,6 @@ import 'package:daily_journal_app/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:daily_journal_app/home_screen.dart';
 import 'package:daily_journal_app/mood_screen.dart';
-import 'package:daily_journal_app/write_screen.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 void main() {
@@ -10,7 +9,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +18,7 @@ class MyApp extends StatelessWidget {
       home: const Splash(),
       routes: {
         '/home': (context) => const HomeScreen(),
-        '/mood': (context) => const MoodScreen(),
+        '/mood': (context) => MoodScreen(),
         //  '/write': (context) => const WriteScreen(),
       },
     );
@@ -31,8 +30,7 @@ class CustomScaffold extends StatelessWidget {
   final int selectedIndex;
 
   const CustomScaffold(
-      {Key? key, required this.body, required this.selectedIndex})
-      : super(key: key);
+      {super.key, required this.body, required this.selectedIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +43,7 @@ class CustomScaffold extends StatelessWidget {
         gap: 8,
         color: Colors.white,
         activeColor: Colors.white,
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         tabs: [
           GButton(
             icon: Icons.add_chart,
