@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 import 'entry_data.dart';
 import 'main.dart';
 import 'write_screen.dart';
+import 'database_helper.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,10 +15,87 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late Database _database;
+  List<Map<String, dynamic>> _entrys = [];
   @override
   void initState() {
     super.initState();
+    _initializeDatabase();
+    // Database _database = dbhelp.db as Database;
+    //_refreshNotes();
   }
+
+  Future<void> _initializeDatabase() async {
+    _database = await openDatabase(
+      join(await getDatabasesPath(), 'entry_database.db'),
+      onCreate: (db, version) {
+        return db.execute(
+          'CREATE TABLE entry(id INTEGER PRIMARY KEY, title TEXT, content TEXT, mood INT)',
+        );
+      },
+      version: 1,
+    );
+    _refreshNotes();
+  }
+
+  Future<void> _insertNote(Entry? note) async {
+    await _database.insert(
+      'notes',
+      note!.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    _refreshNotes();
+  }
+
+  Future<void> _updateNote(Entry? note) async {
+    await _database.update(
+      'notes',
+      note!.toMap(),
+      where: 'id = ?',
+      whereArgs: [note.id],
+    );
+    _refreshNotes();
+  }
+
+  Future<void> _refreshNotes() async {
+    final List<Map<String, dynamic>> notes = await _database.query('notes');
+    setState(() {
+      _entrys = notes;
+    });
+  }
+
+  Future<void> _deleteNote(int? id) async {
+    await _database.delete(
+      'notes',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    _refreshNotes();
+  }
+
+  // DBHelper dbhelp = DBHelper();
+  // late int length = entryLength() as int;
+  // late List<Entry> _entry = getEntries() as List<Entry>;
+  // late List<Map<String, dynamic>> _entries =
+  //     dbhelp.refreshNotes() as List<Map<String, dynamic>>;
+
+  // Future<int> entryLength() async {
+  //   List<Entry> entries = await dbhelp.getEntries();
+  //   length = entries.length;
+  //   return length;
+  // }
+
+  // Future<List<Entry>> getEntries() async {
+  //   List<Entry> entries = await dbhelp.getEntries();
+  //   return entries;
+  // }
+
+  // Future<void> _refreshNotes() async {
+  //   final List<Entry> entry = await dbhelp.getEntries();
+  //   setState(() {
+  //     _entry = entry;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Expanded(
                 child: ListView.builder(
-              itemCount: sampleEntry.length,
+              itemCount: _entrys.length,
               padding: const EdgeInsets.only(top: 30),
               itemBuilder: (context, index) {
                 return Card(
@@ -87,8 +167,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           await Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  WriteScreen(entry: sampleEntry[index]),
+                              builder: (BuildContext context) => WriteScreen(
+                                entry: Entry(
+                                    id: _entrys[index]['id'],
+                                    etitle: _entrys[index]['title'],
+                                    econtent: _entrys[index]['content'],
+                                    emoodRating: _entrys[index]['mood']),
+                                saveEntry: _insertNote,
+                                updateEntry: _updateNote,
+                              ),
                             ),
                           );
                         },
@@ -96,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                           text: TextSpan(
-                              text: '${sampleEntry[index].title} \n',
+                              text: _entrys[index]['title'],
                               style: const TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
@@ -104,7 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   height: 1.5),
                               children: [
                                 TextSpan(
-                                  text: sampleEntry[index].content,
+                                  text: _entrys[index]['content'],
                                   style: const TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.normal,
@@ -116,8 +203,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         subtitle: Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Text(
-                            DateFormat('EEE MMM d, yyyy h:mm a')
-                                .format(sampleEntry[index].modifiedTime),
+                            DateTime.now() as String,
                             style: const TextStyle(
                                 fontSize: 10,
                                 fontStyle: FontStyle.italic,
@@ -126,7 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         trailing: IconButton(
                           onPressed: () async {
-                            deleteNote(index);
+                            _deleteNote(index);
                           },
                           icon: const Icon(
                             Icons.delete,
@@ -146,10 +232,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void deleteNote(int index) {
-    setState(() {
-      Entry entry = sampleEntry[index];
-      sampleEntry.remove(entry);
-    });
-  }
+  // void deleteNote(int index) {
+  //   setState(() {
+  //     Entry entry = sampleEntry[index];
+  //     sampleEntry.remove(entry);
+  //   });
 }

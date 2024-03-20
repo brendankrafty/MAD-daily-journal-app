@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/home': (context) => const HomeScreen(),
         '/mood': (context) => const MoodScreen(),
-        '/write': (context) => const WriteScreen(),
+        //  '/write': (context) => const WriteScreen(),
       },
     );
   }
@@ -30,7 +30,9 @@ class CustomScaffold extends StatelessWidget {
   final Widget body;
   final int selectedIndex;
 
-  const CustomScaffold({Key? key, required this.body, required this.selectedIndex}) : super(key: key);
+  const CustomScaffold(
+      {Key? key, required this.body, required this.selectedIndex})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

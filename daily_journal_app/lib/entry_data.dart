@@ -1,58 +1,46 @@
 class Entry {
-  int id;
-  String title;
-  String content;
-  DateTime modifiedTime;
+  late int? id;
+  late String? etitle;
+  late String? econtent;
+  late int? emoodRating;
 
+  Entry.i(int this.id, String title, String content, int moodRating) {
+    etitle = title;
+    econtent = content;
+    emoodRating = moodRating;
+  }
   Entry({
     required this.id,
-    required this.title,
-    required this.content,
-    required this.modifiedTime,
+    required this.etitle,
+    required this.econtent,
+    required this.emoodRating,
   });
-}
 
-List<Entry> sampleEntry = [
-  Entry(
-    id: 0,
-    title: 'Num 1',
-    content: 'hi ',
-    modifiedTime: DateTime.now(),
-  ),
-  Entry(
-    id: 1,
-    title: 'Num 2',
-    content: 'bye',
-    modifiedTime: DateTime.now(),
-  ),
-  Entry(
-    id: 2,
-    title: 'Num 3',
-    content: 'alksdjfhaskldjh',
-    modifiedTime: DateTime.now(),
-  ),
-  Entry(
-    id: 3,
-    title: 'Num 4',
-    content: 'ds;kfjasd;lfkj',
-    modifiedTime: DateTime.now(),
-  ),
-  Entry(
-    id: 4,
-    title: 'Num 5',
-    content: '101010 0101010 0010001010100101',
-    modifiedTime: DateTime.now(),
-  ),
-  Entry(
-    id: 5,
-    title: 'Num 6',
-    content: '101010 0101010 0010001010100101',
-    modifiedTime: DateTime.now(),
-  ),
-  Entry(
-    id: 6,
-    title: 'Num 7',
-    content: '101010 0101010 0010001010100101',
-    modifiedTime: DateTime.now(),
-  ),
-];
+  Entry.rating(int dietRating, int sleepRating, int moodRating) {
+    emoodRating = moodRating;
+  }
+  Map<String, dynamic> toMap() {
+    var map = <String, dynamic>{
+      'id': id,
+      'title': etitle,
+      'content': econtent,
+      'mood': emoodRating
+    };
+    return map;
+  }
+
+  Entry copyWith({int? id, String? title, String? content, int? rating}) {
+    return Entry(
+        id: id ?? this.id,
+        etitle: title ?? etitle,
+        econtent: content ?? econtent,
+        emoodRating: rating ?? emoodRating);
+  }
+
+  Entry.fromMap(Map<String, dynamic> map) {
+    id = map['id'];
+    etitle = map['title'];
+    econtent = map['content'];
+    emoodRating = map['mood'];
+  }
+}

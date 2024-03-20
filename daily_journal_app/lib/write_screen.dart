@@ -1,13 +1,19 @@
+import 'package:daily_journal_app/database_helper.dart';
+import 'package:daily_journal_app/home_screen.dart';
 import 'package:flutter/material.dart';
-
 
 import 'entry_data.dart';
 import 'main.dart';
 
 class WriteScreen extends StatefulWidget {
   final Entry? entry;
-  const WriteScreen({super.key, this.entry});
-
+  final Function(Entry?) saveEntry;
+  final Function(Entry?) updateEntry;
+  const WriteScreen(
+      {super.key,
+      this.entry,
+      required this.saveEntry,
+      required this.updateEntry});
   @override
   State<WriteScreen> createState() => _WriteScreenState();
 }
@@ -20,11 +26,16 @@ class _WriteScreenState extends State<WriteScreen> {
   void initState() {
     // TODO: implement initState
     if (widget.entry != null) {
-      _titleController = TextEditingController(text: widget.entry!.title);
-      _contentController = TextEditingController(text: widget.entry!.content);
+      _titleController = TextEditingController(text: widget.entry!.etitle);
+      _contentController = TextEditingController(text: widget.entry!.econtent);
     }
 
     super.initState();
+  }
+
+  Future<void> _insertNote(Entry? entry) async {
+    DBHelper entryDB = DBHelper();
+    await entryDB.save(entry!);
   }
 
   @override
@@ -80,19 +91,27 @@ class _WriteScreenState extends State<WriteScreen> {
                     )),
               ),
             ],
-          ))
+          )),
+          FloatingActionButton(
+            onPressed: () {
+              final title = _titleController.text;
+              final content = _contentController.text;
+              const mood = 10;
+              final id = widget.entry?.id;
+              if (title.isNotEmpty && content.isNotEmpty) {
+                widget.saveEntry(Entry(
+                    id: id,
+                    etitle: title,
+                    econtent: content,
+                    emoodRating: mood));
+              }
+            },
+            elevation: 10,
+            backgroundColor: Colors.grey.shade800,
+            child: const Icon(Icons.save),
+          ),
         ]),
       ),
-      //TODO: implement/add floatingActionButton in CustomScaffold class
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     Navigator.pop(
-      //         context, [_titleController.text, _contentController.text]);
-      //   },
-      //   elevation: 10,
-      //   backgroundColor: Colors.grey.shade800,
-      //   child: const Icon(Icons.save),
-      // ),
     );
   }
 }
