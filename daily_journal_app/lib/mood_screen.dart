@@ -21,7 +21,7 @@ class _MoodScreenState extends State<MoodScreen> {
 
   void loadEntries() async {
     entries = await dbHelper.getEntries();
-    setState(() {}); // Call setState to trigger a rebuild of the widget with the loaded entries
+    setState(() {});
   }
 
   List<FlSpot> getSpots() {
@@ -36,7 +36,7 @@ class _MoodScreenState extends State<MoodScreen> {
     return LineChartBarData(
       spots: getSpots(),
       isCurved: true,
-      color: Colors.blue, // Use a single color for the line
+      color: Colors.blue,
       barWidth: 5,
       isStrokeCapRound: true,
       dotData: const FlDotData(show: false),
@@ -49,7 +49,7 @@ class _MoodScreenState extends State<MoodScreen> {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-      selectedIndex: 0,
+      //selectedIndex: 0,
       body: Center(
         child: Padding(
             padding: const EdgeInsets.all(16.0),

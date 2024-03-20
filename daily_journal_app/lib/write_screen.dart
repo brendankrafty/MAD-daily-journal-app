@@ -39,7 +39,7 @@ class _WriteScreenState extends State<WriteScreen> {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-      selectedIndex: 3,
+      //selectedIndex: 3,
       body: Padding(
         padding: const EdgeInsets.fromLTRB(16, 40, 16, 0),
         child: Column(children: [
@@ -73,7 +73,7 @@ class _WriteScreenState extends State<WriteScreen> {
                 decoration: const InputDecoration(
                     border: InputBorder.none,
                     hintText: 'Header',
-                    hintStyle: TextStyle(color: Colors.grey, fontSize: 30)),
+                    hintStyle: TextStyle(color: Colors.white, fontSize: 30)),
               ),
               TextField(
                 controller: _contentController,
@@ -85,7 +85,7 @@ class _WriteScreenState extends State<WriteScreen> {
                     border: InputBorder.none,
                     hintText: 'Whats on your mind?',
                     hintStyle: TextStyle(
-                      color: Colors.grey,
+                      color: Colors.white,
                     )),
               ),
             ],
