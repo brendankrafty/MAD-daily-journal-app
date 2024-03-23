@@ -1,5 +1,3 @@
-import 'database_helper.dart';
-
 class Entry {
   final int? id;
   final String title;
@@ -8,7 +6,7 @@ class Entry {
 
   Entry({this.id, required this.title, required this.content, this.moodRating});
 
-  Entry copy({int? id, String? title, String? content}) => Entry(
+  Entry copy({int? id, String? title, String? content, int? moodRating}) => Entry(
     id: id ?? this.id,
     title: title ?? this.title,
     content: content ?? this.content,
@@ -16,16 +14,16 @@ class Entry {
   );
 
   static Entry fromJson(Map<String, Object?> json) => Entry(
-    id: json[EntryFields.id] as int?,
-    title: json[EntryFields.title] as String,
-    content: json[EntryFields.content] as String,
+    id: json['id'] as int?,
+    title: json['title'] as String,
+    content: json['content'] as String,
     moodRating: json['moodRating'] as int?,
   );
 
   Map<String, Object?> toJson() => {
-    EntryFields.id: id,
-    EntryFields.title: title,
-    EntryFields.content: content,
+    'id': id,
+    'title': title,
+    'content': content,
     'moodRating': moodRating,
   };
 }
