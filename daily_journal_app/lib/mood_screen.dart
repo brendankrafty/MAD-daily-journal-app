@@ -1,11 +1,10 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'main.dart';
 import 'entry_data.dart';
 import 'database_helper.dart';
 
 class MoodScreen extends StatefulWidget {
-  const MoodScreen({super.key});
+  const MoodScreen({Key? key}) : super(key: key);
 
   @override
   _MoodScreenState createState() => _MoodScreenState();
@@ -13,20 +12,15 @@ class MoodScreen extends StatefulWidget {
 
 class _MoodScreenState extends State<MoodScreen> {
   DBHelper dbHelper = DBHelper();
-  List<Entry> entries = [];
+  Future<List<Entry>>? entriesFuture;
 
   @override
   void initState() {
     super.initState();
-    loadEntries();
+    entriesFuture = dbHelper.readAllEntries();
   }
 
-  void loadEntries() async {
-    entries = await dbHelper.readAllEntries();
-    setState(() {});
-  }
-
-  List<FlSpot> getSpots() {
+  List<FlSpot> getSpots(List<Entry> entries) {
     return entries
         .asMap()
         .entries
@@ -34,9 +28,9 @@ class _MoodScreenState extends State<MoodScreen> {
         .toList();
   }
 
-  LineChartBarData getLine() {
+  LineChartBarData getLine(List<Entry> entries) {
     return LineChartBarData(
-      spots: getSpots(),
+      spots: getSpots(entries),
       isCurved: true,
       color: Colors.blue,
       barWidth: 5,
@@ -50,9 +44,12 @@ class _MoodScreenState extends State<MoodScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScaffold(
-      //selectedIndex: 0,
-      body: Center(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Mood Screen'),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
         child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -70,65 +67,77 @@ class _MoodScreenState extends State<MoodScreen> {
                   ),
                 ),
                 Expanded(
-                  child: LineChart(
-                    LineChartData(
-                      lineBarsData: [getLine()],
-                      minY: 1,
-                      maxY: 10,
-                      titlesData: FlTitlesData(
-                        bottomTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: 30,
-                            interval: 1,
-                            getTitlesWidget: (value, meta) => Padding(
-                              padding: const EdgeInsets.only(top: 10.0),
-                              child: Text(
-                                'Day ${value.toInt()}',
-                                style: const TextStyle(
-                                  color: Colors.deepPurple,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12,
+                  child: FutureBuilder<List<Entry>>(
+                    future: entriesFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return const Text('Error loading entries');
+                      } else {
+                        return LineChart(
+                          LineChartData(
+                            lineBarsData: [getLine(snapshot.data!)],
+                            minY: 1,
+                            maxY: 10,
+                            titlesData: FlTitlesData(
+                              bottomTitles: AxisTitles(
+                                sideTitles: SideTitles(
+                                  showTitles: true,
+                                  reservedSize: 30,
+                                  interval: 1,
+                                  getTitlesWidget: (value, meta) => Padding(
+                                    padding: const EdgeInsets.only(top: 10.0),
+                                    child: Text(
+                                      'Day ${value.toInt()}',
+                                      style: const TextStyle(
+                                        color: Colors.deepPurple,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              leftTitles: AxisTitles(
+                                sideTitles: SideTitles(
+                                  showTitles: true,
+                                  getTitlesWidget: (value, meta) => Padding(
+                                    padding: const EdgeInsets.only(right: 10.0),
+                                    child: Text(
+                                      '${value.toInt()}',
+                                      style: const TextStyle(
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ),
-                        leftTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            getTitlesWidget: (value, meta) => Padding(
-                              padding: const EdgeInsets.only(right: 10.0),
-                              child: Text(
-                                '${value.toInt()}',
-                                style: const TextStyle(
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12,
-                                ),
+                            gridData: FlGridData(
+                              show: true,
+                              drawVerticalLine: true,
+                              getDrawingHorizontalLine: (value) => const FlLine(
+                                color: Colors.black26,
+                                strokeWidth: 1,
+                              ),
+                              getDrawingVerticalLine: (value) => const FlLine(
+                                color: Colors.black26,
+                                strokeWidth: 1,
                               ),
                             ),
+                            borderData: FlBorderData(
+                              show: true,
+                              border: Border.all(color: Colors.black, width: 1),
+                            ),
                           ),
-                        ),
-                      ),
-                      gridData: FlGridData(
-                        show: true,
-                        drawVerticalLine: true,
-                        getDrawingHorizontalLine: (value) => const FlLine(
-                          color: Colors.black26,
-                          strokeWidth: 1,
-                        ),
-                        getDrawingVerticalLine: (value) => const FlLine(
-                          color: Colors.black26,
-                          strokeWidth: 1,
-                        ),
-                      ),
-                      borderData: FlBorderData(
-                        show: true,
-                        border: Border.all(color: Colors.black, width: 1),
-                      ),
-                    ),
-                  ),)
+                        );
+                      }
+                    },
+                  ),
+                ),
               ],
             )
         ),

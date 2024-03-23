@@ -1,67 +1,69 @@
-import 'package:daily_journal_app/splash.dart';
-import 'package:daily_journal_app/write_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:daily_journal_app/home_screen.dart';
-import 'package:daily_journal_app/mood_screen.dart';
+import 'mood_screen.dart';
+import 'write_screen.dart';
+import 'home_screen.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const Splash(),
-      routes: {
-        '/home': (context) => const HomeScreen(),
-        '/mood': (context) => const MoodScreen(),
-        '/write': (context) =>
-            WriteScreen(
-              entry: null,
-              saveEntry: (entry) {
-                // saveEntry function here
-              },
-              updateEntry: (entry) {
-                // updateEntry function here
-              },
-              onEntrySaved: () {
-                // _updateEntryList function here
-              },
-            ),
-      },
+      home: CustomScaffold(
+        selectedIndex: 0,
+        body: Text('Home'),
+      ),
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors.grey[200],
+        scaffoldBackgroundColor: Colors.white,
       ),
     );
   }
 }
 
 class CustomScaffold extends StatefulWidget {
+  final int selectedIndex;
   final Widget body;
 
-  const CustomScaffold({super.key, required this.body});
+  CustomScaffold({required this.selectedIndex, required this.body});
 
   @override
   _CustomScaffoldState createState() => _CustomScaffoldState();
 }
 
 class _CustomScaffoldState extends State<CustomScaffold> {
-  int selectedIndex = 0;
+  int _selectedIndex = 0;
+
+  final _screens = [
+    MoodScreen(),
+    HomeScreen(),
+    WriteScreen(
+      saveEntry: (entry) {
+        // Implement saveEntry function here
+      },
+      updateEntry: (entry) {
+        // Implement updateEntry function here
+      },
+      onEntrySaved: () {
+        // Implement onEntrySaved function here
+      },
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: widget.body,
+      body: _screens[_selectedIndex],
       backgroundColor: Colors.white70,
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.black,
-        selectedItemColor: Colors.white,
+        selectedItemColor: Colors.blueGrey,
         unselectedItemColor: Colors.white,
-        currentIndex: selectedIndex,
+        currentIndex: _selectedIndex,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.add_chart),
@@ -77,19 +79,10 @@ class _CustomScaffoldState extends State<CustomScaffold> {
           ),
         ],
         onTap: (index) {
-          setState(() {
-            selectedIndex = index;
-          });
-          switch (index) {
-            case 0:
-              Navigator.pushNamed(context, '/mood');
-              break;
-            case 1:
-              Navigator.pushNamed(context, '/home');
-              break;
-            case 2:
-              Navigator.pushNamed(context, '/write');
-              break;
+          if (index != _selectedIndex) {
+            setState(() {
+              _selectedIndex = index;
+            });
           }
         },
       ),
