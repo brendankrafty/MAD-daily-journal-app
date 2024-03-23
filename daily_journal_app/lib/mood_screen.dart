@@ -5,6 +5,8 @@ import 'entry_data.dart';
 import 'database_helper.dart';
 
 class MoodScreen extends StatefulWidget {
+  const MoodScreen({super.key});
+
   @override
   _MoodScreenState createState() => _MoodScreenState();
 }
@@ -20,7 +22,7 @@ class _MoodScreenState extends State<MoodScreen> {
   }
 
   void loadEntries() async {
-    entries = await dbHelper.getEntries();
+    entries = await dbHelper.readAllEntries();
     setState(() {});
   }
 
@@ -28,7 +30,7 @@ class _MoodScreenState extends State<MoodScreen> {
     return entries
         .asMap()
         .entries
-        .map((entry) => FlSpot(entry.key.toDouble(), (entry.value.emoodRating ?? 0).toDouble()))
+        .map((entry) => FlSpot(entry.key.toDouble(), (entry.value.moodRating ?? 0).toDouble()))
         .toList();
   }
 
