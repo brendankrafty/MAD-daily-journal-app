@@ -3,7 +3,6 @@ import 'package:daily_journal_app/write_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:daily_journal_app/home_screen.dart';
 import 'package:daily_journal_app/mood_screen.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,20 +18,24 @@ class MyApp extends StatelessWidget {
       home: const Splash(),
       routes: {
         '/home': (context) => const HomeScreen(),
-        '/mood': (context) => MoodScreen(),
+        '/mood': (context) => const MoodScreen(),
         '/write': (context) =>
             WriteScreen(
+              entry: null, // Pass the entry here
               saveEntry: (entry) {
                 // Provide saveEntry function here
               },
               updateEntry: (entry) {
                 // Provide updateEntry function here
               },
+              onEntrySaved: () {
+                // Provide _updateEntryList function here
+              },
             ),
       },
-    theme: ThemeData(
-    scaffoldBackgroundColor: Colors.grey[200],
-    ),
+      theme: ThemeData(
+        scaffoldBackgroundColor: Colors.grey[200],
+      ),
     );
   }
 }

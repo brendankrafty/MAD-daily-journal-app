@@ -1,46 +1,31 @@
+import 'database_helper.dart';
+
 class Entry {
-  late int? id;
-  late String? etitle;
-  late String? econtent;
-  late int? emoodRating;
+  final int? id;
+  final String title;
+  final String content;
+  final int? moodRating;
 
-  Entry.i(int this.id, String title, String content, int moodRating) {
-    etitle = title;
-    econtent = content;
-    emoodRating = moodRating;
-  }
-  Entry({
-    required this.id,
-    required this.etitle,
-    required this.econtent,
-    required this.emoodRating,
-  });
+  Entry({this.id, required this.title, required this.content, this.moodRating});
 
-  Entry.rating(int dietRating, int sleepRating, int moodRating) {
-    emoodRating = moodRating;
-  }
-  Map<String, dynamic> toMap() {
-    var map = <String, dynamic>{
-      'id': id,
-      'title': etitle,
-      'content': econtent,
-      'mood': emoodRating
-    };
-    return map;
-  }
+  Entry copy({int? id, String? title, String? content}) => Entry(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    content: content ?? this.content,
+    moodRating: moodRating ?? this.moodRating,
+  );
 
-  Entry copyWith({int? id, String? title, String? content, int? rating}) {
-    return Entry(
-        id: id ?? this.id,
-        etitle: title ?? etitle,
-        econtent: content ?? econtent,
-        emoodRating: rating ?? emoodRating);
-  }
+  static Entry fromJson(Map<String, Object?> json) => Entry(
+    id: json[EntryFields.id] as int?,
+    title: json[EntryFields.title] as String,
+    content: json[EntryFields.content] as String,
+    moodRating: json['moodRating'] as int?,
+  );
 
-  Entry.fromMap(Map<String, dynamic> map) {
-    id = map['id'];
-    etitle = map['title'];
-    econtent = map['content'];
-    emoodRating = map['mood'];
-  }
+  Map<String, Object?> toJson() => {
+    EntryFields.id: id,
+    EntryFields.title: title,
+    EntryFields.content: content,
+    'moodRating': moodRating,
+  };
 }
