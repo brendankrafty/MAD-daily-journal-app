@@ -33,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _updateEntryList() {
+
     setState(() {
       _entryList = DBHelper().readAllEntries();
     });
@@ -81,6 +82,27 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: Colors.blueGrey,
                 ),
               ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FloatingActionButton.small(
+                  onPressed: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => WriteScreen(
+                            entry:
+                                Entry(econtent: "", emoodRating: 1, etitle: ""),
+                            saveEntry: (entry) async {
+                              await _insertEntry(entry);
+                            }),
+                      ),
+                    );
+                  },
+                  child: const Icon(Icons.add),
+                ),
+              ],
             ),
           ],
         ),

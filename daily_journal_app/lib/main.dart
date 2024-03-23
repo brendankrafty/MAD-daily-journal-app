@@ -21,15 +21,15 @@ class MyApp extends StatelessWidget {
         '/mood': (context) => const MoodScreen(),
         '/write': (context) =>
             WriteScreen(
-              entry: null, // Pass the entry here
+              entry: null,
               saveEntry: (entry) {
-                // Provide saveEntry function here
+                // saveEntry function here
               },
               updateEntry: (entry) {
-                // Provide updateEntry function here
+                // updateEntry function here
               },
               onEntrySaved: () {
-                // Provide _updateEntryList function here
+                // _updateEntryList function here
               },
             ),
       },
